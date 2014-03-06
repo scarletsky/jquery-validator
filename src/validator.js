@@ -1,21 +1,28 @@
-
 ;(function ($) {
     var utils = {
-        getValidators: function (object) {
-            return {
-                validators: object['validators'].split(' ')
-            }
+        validators: function (validators) {
+            return validators.split(' ');
         }
-    }
+    };
 
     $.extend($.fn, {
         validate: function () {
+            var value = $(this).val();
             var data = $(this).data();
-            var options = utils.getValidators(data);
+            var options = {};
+
+            $.each(data, function (key, val) {
+                if (utils[key]) {
+                    options[key] = utils[key](val);
+                }
+            });
 
             // window just for test
             window.validator = new $.validator(options);
-            
+
+            $.each(validator.settings.validators, function (i, val) {
+                validator.checker[val](value);
+            });
         }
     });
 
@@ -35,8 +42,17 @@
         prototype: {
             init: function () {},
             checker: {
-                require: function () {console.log(1)},
-                length: function () {console.log(2)},
+                require: function (value) {
+                    return $.trim(value).length > 0 ? true : false;
+                },
+                length: function (value, length) {
+                    if (value.length !== length) {
+                        console.log('false');
+                        return false;
+                    }
+                    console.log('true');
+                    return true;
+                },
                 range: function () {},
                 number: function () {},
                 telphone: function () {},
