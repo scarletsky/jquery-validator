@@ -117,7 +117,6 @@
                 length: function (fieldValue, params) {
                     if ($.type(params.length) === 'undefined') {
                         throw 'You should set `data-length` in the tag attr.';
-                        return false;
                     }
                     return fieldValue.length === params.length;
                 },
@@ -125,7 +124,6 @@
                 lengthMin: function (fieldValue, params) {
                     if ($.type(params.lengthMin) === 'undefined') {
                         throw 'You should set `data-length-min` in the tag attr';
-                        return false;
                     }
                     return fieldValue.length > params.lengthMin;
                 },
@@ -133,7 +131,6 @@
                 lengthMax: function (fieldValue, params) {
                     if ($.type(params.lengthMax) === 'undefined') {
                         throw 'You should set `data-length-max` in the tag attr';
-                        return false;
                     }
                     return fieldValue.length < params.lengthMax;
                 },
@@ -141,7 +138,6 @@
                 range: function (fieldValue, params) {
                     if ($.type(params.rangeMin) === 'undefined' && $.type(params.rangeMax) === 'undefined') {
                         throw 'You should set `data-range-min` and `data-range-max` in the tag attr';
-                        return false;
                     }
                 },
 
