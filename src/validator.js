@@ -6,10 +6,21 @@
                 return fieldData.validators.split(' ');
             },
             params: function (fieldData) {
-                var params = $.extend(true, {}, fieldData);
-                delete params.validators;
+                var params = {};
+                var paramsList = [
+                    'length',
+                    'lengthMin',
+                    'lengthMax',
+                    'rangeMin',
+                    'rangeMax'
+                ];
+
+                $.each(paramsList, function (i, key) {
+                    params[key] = fieldData[key];
+                });
+
                 return params;
-            }
+            },
         };
     })();
 
@@ -58,7 +69,7 @@
                 },
 
                 length: function (fieldValue, params) {
-                    if (!params.length) {
+                    if ($.type(params.length) === 'undefined') {
                         throw 'You should set `data-length` in the tag attr.';
                         return false;
                     }
@@ -66,7 +77,7 @@
                 },
 
                 lengthMin: function (fieldValue, params) {
-                    if (!params.lengthMin) {
+                    if ($.type(params.lengthMin) === 'undefined') {
                         throw 'You should set `data-length-min` in the tag attr';
                         return false;
                     }
@@ -74,7 +85,7 @@
                 },
 
                 lengthMax: function (fieldValue, params) {
-                    if (!params.lengthMax) {
+                    if ($.type(params.lengthMax) === 'undefined') {
                         throw 'You should set `data-length-max` in the tag attr';
                         return false;
                     }
@@ -82,11 +93,10 @@
                 },
 
                 range: function (fieldValue, params) {
-                    if (!params.rangeMin && !params.rangeMax) {
+                    if ($.type(params.rangeMin) === 'undefined' && $.type(params.rangeMax) === 'undefined') {
                         throw 'You should set `data-range-min` and `data-range-max` in the tag attr';
                         return false;
                     }
-
                 },
 
                 number: function (fieldValue) {
