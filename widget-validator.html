@@ -8,8 +8,10 @@
     </head>
 
     <body>
-
-        <input class="require" type="text" data-validators="require length">
-
+        <input type="text"
+                  data-validators="require length lengthMin lengthMax"
+                  data-length="10"
+                  data-length-min="5"
+                  data-length-max="11">
     </body>
 </html>
