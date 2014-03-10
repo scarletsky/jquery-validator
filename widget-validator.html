@@ -9,13 +9,14 @@
 
     <body>
         <input type="text"
-                  data-validators="require length lengthMin lengthMax"
-                  data-length="10"
+                  data-validators="require lengthMin lengthMax"
                   data-length-min="5"
                   data-length-max="11"
-                  data-msg-length="长度是40"
-                  data-msg-length-max="最大值为100"
-                  data-err-length="长度必须是40"
-                  data-err-length-max="最大长度不能超过100">
+                  data-msg-require="请输入用户名"
+                  data-msg-length-min="最小长度是5"
+                  data-msg-length-max="最大长度是11"
+                  data-err-require="用户名不能为空"
+                  data-err-length-min="长度必须大于5"
+                  data-err-length-max="长度必须小于11">
     </body>
 </html>

@@ -2,11 +2,12 @@
     // parse data-*
     var parser = (function () {
         return {
+            // return validators where detector will used
             validators: function (fieldData) {
                 return fieldData.validators.split(' ');
             },
 
-            // return params where checker will used
+            // return params where detector will used
             params: function (fieldData) {
                 var params = {};
                 var paramsMap = [
@@ -35,6 +36,7 @@
                     'msgRange',
                 ];
 
+                // slice the item of  msgMap: e.g msgLengthMin -> lengthMin
                 $.each(msgMap, function (i, key) {
                     var keyAlias = key.substring(3).replace(/\b\w+/g, function (word) {
                         return word.substring(0, 1).toLowerCase() + word.substring(1);
@@ -45,6 +47,8 @@
 
                 return msg;
             },
+
+            // return error where the input tips will used
             error: function (fieldData) {
                 var err = {};
                 var errMap = [
@@ -55,6 +59,7 @@
                     'errRange',
                 ];
 
+                // slice the item of  errMap: e.g errLengthMin -> lengthMin
                 $.each(errMap, function (i, key) {
                     var keyAlias = key.substring(3).replace(/\b\w+/g, function (word) {
                         return word.substring(0, 1).toLowerCase() + word.substring(1);
@@ -86,11 +91,20 @@
             // init validator
             var validator = new $.validator(options);
 
-
             // validate
             $.each(validator.settings.validators, function (i, value) {
-                var result = validator.checker[value].call(this, fieldValue, validator.settings.params);
+                if (validateFlag) {
+                    var result = validator.detectors[value].call(this, fieldValue, validator.settings.params);
+
+                    if (!result) {
+                        validateFlag = false;
+                        validator.handlers[value].call(this, validator.settings.error);
+                        return false;
+                    }
+                }
             });
+
+            return validateFlag;
         }
     });
 
@@ -103,13 +117,19 @@
     $.extend($.validator, {
         defaults: {
             messages: {},
-            error: {},
+            error: {
+                require: 'This field is required',
+                length: 'Length should be 10',
+                lengthMin: 'Length Min shoubd be 5',
+                lengthMax: 'Length Max should be 10',
+                range: 'Range should between 5 an 10'
+            },
             validators: [],
         },
 
         prototype: {
             init: function () {},
-            checker: {
+            detectors: {
                 require: function (fieldValue) {
                     return $.trim(fieldValue).length > 0;
                 },
@@ -140,18 +160,27 @@
                         throw 'You should set `data-range-min` and `data-range-max` in the tag attr';
                     }
                 },
-
-                number: function (fieldValue) {
-
+            },
+            handlers: {
+                require: function (error) {
+                    console.log(error.require);
                 },
 
-                telphone: function (fieldValue) {
-
+                length: function (error) {
+                    console.log(error.length);
                 },
 
-                equalTo: function (fieldValue, params) {
-
+                lengthMin: function (error) {
+                    console.log(error.lengthMin);
                 },
+
+                lengthMax: function (error) {
+                    console.log(error.lengthMax);
+                },
+
+                range: function (error) {
+                    console.log(error.range);
+                }
             }
         }
     });
