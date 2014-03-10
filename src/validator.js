@@ -82,6 +82,10 @@
             var fieldValue = field.val();
             var fieldData = field.data();
 
+            if (!fieldData.validators) {
+                return;
+            }
+
             // set the options object
             options.validators = parser.validators(fieldData);
             options.params = parser.params(fieldData);
