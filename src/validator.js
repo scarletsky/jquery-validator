@@ -76,8 +76,10 @@
     $.extend($.fn, {
         validate: function () {
             // init private variables
-            var validateFlag = true;
+            var bubble;
+            var errorMsg = '';
             var options = {};
+            var validateFlag = true;
             var field = $(this);
             var fieldValue = field.val();
             var fieldData = field.data();
@@ -102,11 +104,24 @@
 
                     if (!result) {
                         validateFlag = false;
-                        validator.handlers[value].call(this, validator.settings.error);
+                        errorMsg = validator.settings.error[value];
+
                         return false;
                     }
                 }
             });
+
+            if (!validateFlag) {
+                if ($.type(($.validator.bubble)) === 'function') {
+                    bubble = $.validator.bubble(errorMsg);
+                } else {
+                    bubble = validator.bubble(errorMsg);
+                }
+
+                validator.errorHandler.addError(field, validator.settings.errorClass, errorMsg);
+            } else {
+                validator.errorHandler.removeError(field, validator.settings.errorClass, errorMsg);
+            }
 
             return validateFlag;
         }
@@ -119,6 +134,7 @@
     };
 
     $.extend($.validator, {
+        // defaults -> settings
         defaults: {
             messages: {},
             error: {
@@ -128,11 +144,17 @@
                 lengthMax: 'Length Max should be 10',
                 range: 'Range should between 5 an 10'
             },
+            errorClass: 'error',
             validators: [],
         },
 
         prototype: {
             init: function () {},
+            bubble: function (errorMsg) {
+                var html = '<p class="error">' + errorMsg + '</p>';
+
+                return $(html);
+            },
             detectors: {
                 require: function (fieldValue) {
                     return $.trim(fieldValue).length > 0;
@@ -165,27 +187,24 @@
                     }
                 },
             },
-            handlers: {
-                require: function (error) {
-                    console.log(error.require);
+            errorHandler: {
+                addErrorMsg: function (field, errorMsg) {
+                    console.log('this is addErrorMsg Func');
                 },
-
-                length: function (error) {
-                    console.log(error.length);
+                addErrorClass: function (field, errorClass) {
+                    console.log('this is addErrorClass Func');
                 },
-
-                lengthMin: function (error) {
-                    console.log(error.lengthMin);
+                removeErrorClass: function (field, errorClass) {
+                    console.log('this is removeErrorClass Func');
                 },
-
-                lengthMax: function (error) {
-                    console.log(error.lengthMax);
+                addError: function (field, errorClass, errorMsg) {
+                    this.addErrorMsg();
+                    this.addErrorClass();
                 },
-
-                range: function (error) {
-                    console.log(error.range);
+                removeError: function (field, errorClass, errorMsg) {
+                    this.removeErrorClass();
                 }
-            }
+            },
         }
     });
 

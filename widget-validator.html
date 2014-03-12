@@ -5,6 +5,15 @@
         <title>迁移LESS组件展示</title>
         <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
         <script src="src/validator.js"></script>
+        <style>
+            .error {
+                border: 1px solid red;
+            }
+
+            .success {
+                border: 1px solid green;
+            }
+        </style>
     </head>
 
     <body>
@@ -15,8 +24,13 @@
                   data-msg-require="请输入用户名"
                   data-msg-length-min="最小长度是5"
                   data-msg-length-max="最大长度是11"
-                  data-err-require="用户名不能为空"
                   data-err-length-min="长度必须大于5"
                   data-err-length-max="长度必须小于11">
+         <button id="validate">validate</button>
+         <script>
+            $('#validate').click(function (e) {
+                $('input').validate();
+            });
+         </script>
     </body>
 </html>
