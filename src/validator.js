@@ -69,6 +69,28 @@
                 });
 
                 return err;
+            },
+
+            // events that will invoke validate function
+            validateEvents: function (fieldData) {
+                var ev = [];
+                var evMap = [
+                    'vevClick',
+                    'vevBlur',
+                    'vevKeyup',
+                ];
+
+                $.each(evMap, function (i, key) {
+                    var keyAlias = key.substring(3).replace(/\b\w+/g, function (word) {
+                        return word.substring(0, 1).toLowerCase() + word.substring(1);
+                    });
+
+                    if (key in fieldData) {
+                        ev.push(keyAlias);
+                    }
+                });
+
+                return ev.join(' ');
             }
         };
     })();
@@ -76,13 +98,13 @@
     $.extend($.fn, {
         validate: function () {
             // init private variables
-            var bubble;
-            var errorMsg = '';
-            var options = {};
-            var validateFlag = true;
-            var field = $(this);
-            var fieldValue = field.val();
-            var fieldData = field.data();
+            var bubble,
+                errorMsg = '',
+                options = {},
+                validateFlag = true,
+                field = $(this),
+                fieldValue = field.val(),
+                fieldData = field.data();
 
             if (!fieldData.validators) {
                 return;
@@ -111,6 +133,9 @@
                 }
             });
 
+            validator.errorHandler.removeError(field, validator.settings.errorClass);
+
+            // error handler
             if (!validateFlag) {
                 if ($.type(($.validator.bubble)) === 'function') {
                     bubble = $.validator.bubble(errorMsg);
@@ -118,24 +143,31 @@
                     bubble = validator.bubble(errorMsg);
                 }
 
-                validator.errorHandler.addError(field, validator.settings.errorClass, errorMsg);
+                validator.errorHandler.addError(field, validator.settings.errorClass, bubble);
             } else {
-                validator.errorHandler.removeError(field, validator.settings.errorClass, errorMsg);
+                validator.errorHandler.removeError(field, validator.settings.errorClass);
             }
 
             return validateFlag;
+        },
+        eventBind: function () {
+            var field = $(this),
+                fieldData = field.data();
+                ev = parser.validateEvents(fieldData);
+
+            return field.bind(ev, field.validate);
         }
     });
 
     // Constructor
     $.validator = function (options) {
         this.settings = $.extend(true, {}, $.validator.defaults, options);
-        this.init();
     };
 
     $.extend($.validator, {
         // defaults -> settings
         defaults: {
+            validators: [],
             messages: {},
             error: {
                 require: 'This field is required',
@@ -144,14 +176,12 @@
                 lengthMax: 'Length Max should be 10',
                 range: 'Range should between 5 an 10'
             },
-            errorClass: 'error',
-            validators: [],
+            errorClass: 'error'
         },
 
         prototype: {
-            init: function () {},
             bubble: function (errorMsg) {
-                var html = '<p class="error">' + errorMsg + '</p>';
+                var html = '<p class="validate-tips">' + errorMsg + '</p>';
 
                 return $(html);
             },
@@ -171,14 +201,14 @@
                     if ($.type(params.lengthMin) === 'undefined') {
                         throw 'You should set `data-length-min` in the tag attr';
                     }
-                    return fieldValue.length > params.lengthMin;
+                    return fieldValue.length >= params.lengthMin;
                 },
 
                 lengthMax: function (fieldValue, params) {
                     if ($.type(params.lengthMax) === 'undefined') {
                         throw 'You should set `data-length-max` in the tag attr';
                     }
-                    return fieldValue.length < params.lengthMax;
+                    return fieldValue.length <= params.lengthMax;
                 },
 
                 range: function (fieldValue, params) {
@@ -188,21 +218,13 @@
                 },
             },
             errorHandler: {
-                addErrorMsg: function (field, errorMsg) {
-                    console.log('this is addErrorMsg Func');
+                addError: function (field, errorClass, bubble) {
+                    bubble.insertAfter(field);
+                    field.addClass(errorClass);
                 },
-                addErrorClass: function (field, errorClass) {
-                    console.log('this is addErrorClass Func');
-                },
-                removeErrorClass: function (field, errorClass) {
-                    console.log('this is removeErrorClass Func');
-                },
-                addError: function (field, errorClass, errorMsg) {
-                    this.addErrorMsg();
-                    this.addErrorClass();
-                },
-                removeError: function (field, errorClass, errorMsg) {
-                    this.removeErrorClass();
+                removeError: function (field, errorClass) {
+                    field.removeClass(errorClass);
+                    field.next('.validate-tips').remove();
                 }
             },
         }

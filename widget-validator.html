@@ -18,19 +18,48 @@
 
     <body>
         <input type="text"
-                  data-validators="require lengthMin lengthMax"
-                  data-length-min="5"
-                  data-length-max="11"
-                  data-msg-require="请输入用户名"
-                  data-msg-length-min="最小长度是5"
-                  data-msg-length-max="最大长度是11"
-                  data-err-length-min="长度必须大于5"
-                  data-err-length-max="长度必须小于11">
-         <button id="validate">validate</button>
-         <script>
+               data-validators="require lengthMin lengthMax"
+               data-length-min="5"
+               data-length-max="11"
+               data-msg-require="请输入用户名"
+               data-msg-length-min="最小长度是5"
+               data-msg-length-max="最大长度是11"
+               data-err-require="这是必填字段"
+               data-err-length-min="长度必须大于5"
+               data-err-length-max="长度必须小于11"
+               data-vev-keyup>
+
+        <input type="text"
+               data-validators="require lengthMin lengthMax"
+               data-length-min="4"
+               data-length-max="18"
+               data-err-require="请输入用户名"
+               data-err-length-min="长度必须大于4"
+               data-err-length-max="长度必须小于18"
+               data-vev-blur>
+
+        <div>
+            <button id="validate">validate</button>
+            <button id="settings">eventBind</button>
+        </div>
+        <script>
+            $.validator.bubble = function (errMsg) {
+                var html = '<span class="validate-tips">' + errMsg + '</span>';
+
+                return $(html);
+            }
+
             $('#validate').click(function (e) {
-                $('input').validate();
+                $.each($('input'), function () {
+                    $(this).validate();  
+                })
             });
-         </script>
+
+            $('#settings').click(function (e) {
+                $.each($('input'), function () {
+                    $(this).eventBind();  
+                })
+            });
+        </script>
     </body>
 </html>
