@@ -73,24 +73,7 @@
 
             // events that will invoke validate function
             validateEvents: function (fieldData) {
-                var ev = [];
-                var evMap = [
-                    'vevClick',
-                    'vevBlur',
-                    'vevKeyup',
-                ];
-
-                $.each(evMap, function (i, key) {
-                    var keyAlias = key.substring(3).replace(/\b\w+/g, function (word) {
-                        return word.substring(0, 1).toLowerCase() + word.substring(1);
-                    });
-
-                    if (key in fieldData) {
-                        ev.push(keyAlias);
-                    }
-                });
-
-                return ev.join(' ');
+                return fieldData.evValidate;
             }
         };
     })();
@@ -155,7 +138,11 @@
                 fieldData = field.data();
                 ev = parser.validateEvents(fieldData);
 
-            return field.bind(ev, field.validate);
+            if (ev) {
+                return field.bind(ev, field.validate);
+            } else {
+                return;
+            }
         }
     });
 
