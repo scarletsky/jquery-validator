@@ -1,7 +1,7 @@
 jquery-validator
 ================
 
-## Basic Usage
+## Quick Start
 
 1.Load the javascript file in the html.
 
@@ -29,17 +29,65 @@ jquery-validator
 $('input').validate();
 
 /* validate all input */
-$('button#validate').click(function (e) {
-    $.each($('input'), function () {
-        $(this).validate();  
-    })
+$.each($('input'), function () {
+    $(this).validate();  
 });
 
 /* bind events if you need */
-$('button#validate').click(function (e) {
-    $.each($('input'), function () {
-        $(this).eventBind();  
-    })
+$.each($('input'), function () {
+    $(this).eventBind();  
 });
 ```
+
+## Document
+
+#### require
+
+##### data-validators
+The input field will be validate by these validators.
+
+e.g. `data-validators="require length lengthMin lengthMax"`
+
+#### options
+
+##### data-`<validator>`
+The rule will be used by validator.
+
+e.g. `data-length="5"`
+
+e.g. `data-length-min="3"`
+
+e.g. `data-length-max="5"`
+
+##### data-err-`<validator>`
+The error message will show when the input value is invalid.
+
+e.g. `data-err-require="Username is require!"`
+
+e.g. `data-err-length="Please input 5 characters!"`
+
+e.g. `data-err-length-min="hello world!"`
+
+##### data-ev-validate
+The input field will be validate when these events occur.
+
+e.g. `data-ev-validate="click blur keyup"`
+
+#### customize your bubble
+
+```javascript
+/* You can easily customize your bubble by override the default bubble function.*/
+$.validator.bubble = function (errMsg) {
+    var html = [
+        '<div class="validate-tips">',
+            '<div class="bubble-body">',
+                errMsg,
+            '</div>'
+        '</div>'
+    ];
+
+    return $(html.join(''));
+};
+```
+The **ONLY** thing you should know is that the bubble should wrapper by `class="validate-tips"`;
 
