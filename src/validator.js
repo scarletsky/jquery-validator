@@ -158,12 +158,23 @@
             messages: {},
             error: {
                 require: 'This field is required',
-                length: 'Length should be 10',
-                lengthMin: 'Length Min shoubd be 5',
-                lengthMax: 'Length Max should be 10',
-                range: 'Range should between 5 an 10'
+                length: 'String Length Error',
+                lengthMin: 'String Length Error',
+                lengthMax: 'String Length Error',
+                range: 'Range Error'
             },
             errorClass: 'error'
+        },
+
+        verifyGroup: function (selector) {
+            var verifyFlag = true;
+            $(selector).find('input, textarea').each(function () {
+                var field = $(this);
+                if (!field.validate()) {
+                    verifyFlag = false;
+                }
+            });
+            return verifyFlag;
         },
 
         prototype: {
@@ -202,6 +213,7 @@
                     if ($.type(params.rangeMin) === 'undefined' && $.type(params.rangeMax) === 'undefined') {
                         throw 'You should set `data-range-min` and `data-range-max` in the tag attr';
                     }
+                    return fieldValue >= params.rangeMin && fieldValue <= params.rangeMax;
                 },
             },
             errorHandler: {
@@ -213,7 +225,7 @@
                     field.removeClass(errorClass);
                     field.next('.validate-tips').remove();
                 }
-            },
+            }
         }
     });
 

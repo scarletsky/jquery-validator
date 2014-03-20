@@ -17,49 +17,57 @@
     </head>
 
     <body>
-        <input type="text"
-               data-validators="require lengthMin lengthMax"
-               data-length-min="5"
-               data-length-max="11"
-               data-msg-require="请输入用户名"
-               data-msg-length-min="最小长度是5"
-               data-msg-length-max="最大长度是11"
-               data-err-require="这是必填字段"
-               data-err-length-min="长度必须大于5"
-               data-err-length-max="长度必须小于11"
-               data-ev-validate="click blur">
+        <div class="verify-group">
+            <input type="text"
+                   data-validators="require lengthMin lengthMax"
+                   data-length-min="5"
+                   data-length-max="11"
+                   data-err-require="这是必填字段"
+                   data-err-length-min="长度必须大于5"
+                   data-err-length-max="长度必须小于11"
+                   data-ev-validate="click blur"/>
 
-        <input type="text"
-               data-validators="require lengthMin lengthMax"
-               data-length-min="4"
-               data-length-max="18"
-               data-err-require="请输入用户名"
-               data-err-length-min="长度必须大于4"
-               data-err-length-max="长度必须小于18"
-               data-ev-validate="keyup">
+            <input type="text"
+                   data-validators="require lengthMin lengthMax"
+                   data-length-min="4"
+                   data-length-max="18"
+                   data-err-require="请输入用户名"
+                   data-err-length-min="长度必须大于4"
+                   data-err-length-max="长度必须小于18"
+                   data-ev-validate="keyup"/>
+
+            <input type="text"
+                   data-validators="require range"
+                   data-range-min="10"
+                   data-range-max="20"/>
+
+            <textarea name="test-textarea"
+                      rows="8"
+                      cols="40"
+                      data-validators="require lengthMin"
+                      data-length-min="4"
+                      data-err-require="请输入内容"
+                      data-err-length-min="请输入你喜欢的歌手"
+                      data-ev-validate="keyup"></textarea>
+        </div>
 
         <div>
             <button id="validate">validate</button>
             <button id="settings">eventBind</button>
+            <button id="verify-group">verifyGroup</button>
         </div>
+
         <script>
             $.validator.bubble = function (errMsg) {
-                var html = '<span class="validate-tips">' + errMsg + '</span>';
+                var html = '';
 
                 return $(html);
             }
-
-            $('#validate').click(function (e) {
-                $.each($('input'), function () {
-                    $(this).validate();  
-                })
+    
+            $('#verify-group').click(function () {
+                console.log($.validator.verifyGroup('.verify-group'));
             });
 
-            $('#settings').click(function (e) {
-                $.each($('input'), function () {
-                    $(this).eventBind();  
-                })
-            });
         </script>
     </body>
 </html>
