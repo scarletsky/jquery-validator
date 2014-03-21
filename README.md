@@ -26,16 +26,51 @@ jquery-validator
 
 ```javascript
 /* basic usage */
-$('input').validate();
+$('input').validate();  // return true if the value is valid else false
 
 /* validate all input */
 $.each($('input'), function () {
-    $(this).validate();  
+    $(this).validate();
 });
 
 /* bind events if you need */
 $.each($('input'), function () {
-    $(this).eventBind();  
+    $(this).eventBind();  // the input field will invoke `$(this).validate()` when the event occur
+});
+
+```
+
+You can also use `$.validator.verifyGroup('.verify-group')` to verify all the field in the `.verify-group`
+
+```html
+/* verify all input fields */
+<div class="verify-group">
+    <input type="text"
+           data-validators="require lengthMin lengthMax"
+           data-length-min="5"
+           data-length-max="11"
+           data-ev-validate="click blur"/>
+
+    <input type="text"
+           data-validators="require range"
+           data-range-min="10"
+           data-range-max="20"/>
+
+    <textarea name="test-textarea"
+              rows="8"
+              cols="40"
+              data-validators="require lengthMin"
+              data-length-min="4"
+              data-ev-validate="keyup"></textarea>
+</div>
+```
+
+```javascript
+$('#verify-group').click(function () {
+    var result = $.validator.verifyGroup('.verify-group'); // it will return true when all fields are valid
+    if (result) {
+        $('form').submit();
+    }
 });
 ```
 
