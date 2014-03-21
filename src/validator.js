@@ -1,3 +1,31 @@
+/* module: jquery-validator
+ * author: scarletsky
+ * date:   2014-03-21
+ * repo:   https://github.com/scarletsky/jquery-validator
+ * issues and pull requests are welcome.
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** * * * *
+ * API
+ * $(selector).validate()
+ * $(selector).bindEvents()
+ * $.validator.verifyGroup(selector)
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** * * * *
+ * 工作方式
+ * 在 input 标签中的属性处添加 data-validators, data-*,
+ * 执行 $(selector).validate() 时，
+ * 会先通过 parser 解析 data-* 的内容，得到一个 options ,
+ * 再通过这个 options 来创建一个 $.validator 的实例。
+ * 这个实例会对 data-validators 中包含的验证规则验证一遍。
+ * 如果其中一个验证规则不通过，那就返回 false。
+ * 并且会调用 $.validator.prototype.bubble 来创建气泡, 
+ * 同时会为该 field 添加 error class。
+ * 如果验证都通过了，那就会移除气泡和 error class.
+ * 并且返回 true。
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** * * * *
+ * 如果要添加验证规则
+ * 那就要分别在 parser, defaults.error, $.validator.prototype.detactor 中添加相应的信息。
+ * 需要注意的是该规则必须用驼峰写法 。
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** * * * *
+ */
 ;(function ($) {
     // parse data-*
     var parser = (function () {
