@@ -89,8 +89,9 @@
                 fieldValue = field.val(),
                 fieldData = field.data();
 
+            // if no validators, it means the field should not be validated, so it should return true;
             if (!fieldData.validators) {
-                return;
+                return true;
             }
 
             // set the options object
@@ -177,6 +178,7 @@
             return verifyFlag;
         },
 
+        // the validator instance can invoke the following function
         prototype: {
             bubble: function (errorMsg) {
                 var html = '<p class="validate-tips">' + errorMsg + '</p>';
